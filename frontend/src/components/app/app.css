@@ -2500,6 +2500,34 @@ li:has(> .note-row:hover) + li > .note-row::before {
   overflow-wrap: anywhere;
 }
 
+.purr__md > * + * {
+  margin-top: 0.6em;
+}
+
+/* the answer panel centres its text; lists read better left-aligned as a centred block */
+.purr__md ul,
+.purr__md ol {
+  display: inline-block;
+  text-align: left;
+  padding-left: 1.25em;
+}
+
+.purr__md ul {
+  list-style: disc;
+}
+
+.purr__md ol {
+  list-style: decimal;
+}
+
+.purr__md li + li {
+  margin-top: 0.3em;
+}
+
+.purr__md strong {
+  font-weight: 600;
+}
+
 .purr__composer {
   width: 100%;
   max-width: none;

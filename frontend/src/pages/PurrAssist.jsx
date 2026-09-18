@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ArrowUp, Eraser, History, Loader2, Mic, Sparkles, Square, Volume2, VolumeX } from "lucide-react";
 import AppShell, { useAppTheme } from "../components/app/AppShell";
 import Dialog from "../components/app/Dialog";
@@ -9,6 +11,15 @@ import { useAuth } from "../context/AuthContext";
 import { useClearMessagesMutation, useSendMessageMutation } from "../slices/apiSlice";
 import useVoice from "../hooks/useVoice";
 import useSpeaker from "../hooks/useSpeaker";
+
+// Answers come back as markdown (bold, lists) — render it like the chat page does
+function Markdown({ text }) {
+  return (
+    <div className="purr__md">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+    </div>
+  );
+}
 
 const LANGUAGES = [["en-US", "EN"], ["ru-RU", "RU"]];
 const VOICE_KEY = "purr-speaks";
@@ -63,7 +74,7 @@ function ConversationDialog({ open, theme, messages, onClose, onClear, clearing,
                 </button>
               )}
             </p>
-            <p className={`whitespace-pre-wrap ${m.role === "ai" ? "" : "app-muted"}`}>{m.text}</p>
+            {m.role === "ai" ? <Markdown text={m.text} /> : <p className="whitespace-pre-wrap app-muted">{m.text}</p>}
           </li>
         ))}
       </ul>
@@ -259,7 +270,7 @@ export default function PurrAssist() {
 
           <div className="purr__answer" aria-live="polite">
             {lastAnswer ? (
-              <p className="whitespace-pre-wrap">{lastAnswer.text}</p>
+              <Markdown text={lastAnswer.text} />
             ) : (
               <p className="app-muted">Purr remembers your recent messages and answers from your uploaded document when there is one.</p>
             )}
