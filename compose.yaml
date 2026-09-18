@@ -1,0 +1,29 @@
+# Run the whole app:   docker compose up --build
+# Frontend → http://localhost:5173    Backend → http://localhost:8000
+#
+# Needs backend/.env (copy backend/.env.example and fill it in).
+services:
+  backend:
+    build:
+      context: ./backend
+      args:
+        # set WITH_VOICES=false to skip the ~180 MB Piper voices (browser voice is used instead)
+        WITH_VOICES: ${WITH_VOICES:-true}
+    env_file: backend/.env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # empty → the values in frontend/.env are used
+        VITE_SERVER_URL: ${VITE_SERVER_URL:-}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

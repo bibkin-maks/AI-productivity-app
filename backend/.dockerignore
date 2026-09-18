@@ -1,0 +1,19 @@
+**/.DS_Store
+**/__pycache__
+**/.venv
+**/.env
+**/.git
+**/.gitignore*
+**/.vscode
+**/compose.y*ml
+**/Dockerfile*
+**/.dockerignore
+
+images
+
+# voice models are downloaded in the image build
+voices/*.onnx
+voices/*.onnx.json
+
+LICENSE*
+README*
