@@ -1,4 +1,3 @@
-import React from 'react';
 import Reveal from '../home/Reveal';
 
 const plans = [

@@ -101,7 +101,7 @@ function StatusPill({ status, savedAt, onRetry }) {
   if (status === "error") {
     return (
       <span className="note-status note-status--error" role="alert">
-        Couldn't save <button type="button" className="underline underline-offset-2 font-semibold" onClick={onRetry}>Retry</button>
+        Couldn&apos;t save <button type="button" className="underline underline-offset-2 font-semibold" onClick={onRetry}>Retry</button>
       </span>
     );
   }

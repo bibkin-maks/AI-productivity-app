@@ -424,7 +424,7 @@ export default function Notes() {
           <div className="notes-list__scroll">
             {isError ? (
               <div className="p-6 text-center">
-                <p className="font-semibold">Couldn't load your notes</p>
+                <p className="font-semibold">Couldn&apos;t load your notes</p>
                 <button type="button" className="app-button mt-3" onClick={refetch}>Retry</button>
               </div>
             ) : loading ? (

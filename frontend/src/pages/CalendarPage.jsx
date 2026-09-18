@@ -454,7 +454,7 @@ export default function CalendarPage() {
         <section className="cal-card" aria-label="Calendar" aria-busy={isLoading || busy}>
           {isError ? (
             <div className="h-full flex flex-col items-center justify-center gap-3 text-center">
-              <p className="text-xl font-semibold">Couldn't load your events</p>
+              <p className="text-xl font-semibold">Couldn&apos;t load your events</p>
               <button type="button" className="app-button" onClick={refetch}>Retry</button>
             </div>
           ) : (
