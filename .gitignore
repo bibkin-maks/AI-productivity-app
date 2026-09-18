@@ -1,0 +1,16 @@
+# Safety net; backend/ and frontend/ keep their own .gitignore files
+.env
+**/__pycache__/
+**/node_modules/
+**/.venv/
+backend/voices/*.onnx
+backend/voices/*.onnx.json
+.claude/
+inspiration/
+frontend/design/
+**/.env
+**/.env.*
+!**/.env.example
+**/faiss_vector_store/
+**/uploaded_documents/
+**/chrome_profiles/
