@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field, model_validator
-from typing import List, Optional, Literal
-from enum import Enum
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
+from enum import Enum
+from typing import List, Literal, Optional
+
+from pydantic import BaseModel, Field, model_validator
 
 # ---------------------------------------------------------------------------
 # Enums
@@ -57,7 +58,8 @@ class WorkoutLogItem(BaseModel):
 def _parse_iso(value: str, field: str) -> datetime:
     """Parse an ISO 8601 string; raise ValueError with a clear message."""
     try:
-        return datetime.fromisoformat(value)
+        # Browsers send UTC as a trailing "Z" (toISOString); fromisoformat only accepts it from Python 3.11
+        return datetime.fromisoformat(value[:-1] + "+00:00" if value.endswith("Z") else value)
     except ValueError:
         raise ValueError(f"'{field}' must be a valid ISO 8601 datetime string, got: {value!r}")
 
