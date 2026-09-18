@@ -105,7 +105,7 @@ const EmptyState = ({ documentName, onPromptClick }) => (
     <p className="app-muted text-lg mt-4 max-w-lg">
       {documentName
         ? <>Answers come straight from <span className="text-[var(--app-text)] font-medium break-words">{documentName}</span>.</>
-        : "Drop a PDF, DOCX or TXT file into the document panel, then ask questions about it."}
+        : "Drop a PDF into the document panel, then ask questions about it."}
     </p>
 
     {documentName && (

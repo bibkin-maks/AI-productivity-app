@@ -18,7 +18,7 @@ export default function FileUpload({ className = "", showAskQuestion = true, nav
   const onDrop = async (accepted, rejected) => {
     setError("");
     if (rejected?.length) {
-      setError("That file type isn't supported. Use a PDF, DOCX or TXT file.");
+      setError("That file isn't supported. Upload a PDF of up to 20 MB.");
       return;
     }
     const file = accepted[0];
@@ -52,7 +52,8 @@ export default function FileUpload({ className = "", showAskQuestion = true, nav
 
   // Dropzone config
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: { "application/pdf": [], "text/plain": [], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [] },
+    accept: { "application/pdf": [".pdf"] },  // the backend accepts PDFs only
+    maxSize: 20 * 1024 * 1024,                 // …up to 20 MB
     maxFiles: 1,
     onDrop,
     disabled: !!storedFileName || isUploading,
@@ -96,7 +97,7 @@ export default function FileUpload({ className = "", showAskQuestion = true, nav
               <p className="text-3xl font-light leading-tight">
                 {isDragActive ? "Drop to upload" : <>Drop a PDF<br />or click to browse</>}
               </p>
-              <p className="app-label">PDF · DOCX · TXT · max 10MB</p>
+              <p className="app-label">PDF · max 20 MB</p>
             </>
           )}
         </div>
@@ -115,7 +116,7 @@ export default function FileUpload({ className = "", showAskQuestion = true, nav
             <span className="home-drop__underline">
               {isDragActive ? "Drop to upload!" : "Drop a PDF here to start chatting"}
             </span>
-            <span className="home-label block mt-8">or click to upload (max 10MB) · PDF · DOCX · TXT</span>
+            <span className="home-label block mt-8">or click to upload · PDF up to 20 MB</span>
           </>
         ) : (
           <>
@@ -186,16 +187,14 @@ export default function FileUpload({ className = "", showAskQuestion = true, nav
               {isDragActive ? "Drop to upload!" : "Drop a PDF here to start chatting"}
             </p>
             <p className="text-sm text-slate-400">
-              or click to upload (max 10MB)
+              or click to upload (max 20 MB)
             </p>
           </div>
 
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-slate-500 font-semibold pt-2">
             <span>PDF</span>
             <span className="w-1 h-1 rounded-full bg-slate-600" />
-            <span>DOCX</span>
-            <span className="w-1 h-1 rounded-full bg-slate-600" />
-            <span>TXT</span>
+            <span>up to 100 pages</span>
           </div>
         </div>
       ) : (
