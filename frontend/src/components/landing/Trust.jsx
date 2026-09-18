@@ -37,15 +37,16 @@ const AccordionItem = ({ question, answer }) => {
 };
 
 export default function Trust() {
+    // Only what the code actually does — see backend/app/core/security.py and the tests
     const badges = [
-        { title: "SOC 2 Compliant", text: "Our infrastructure adheres to the highest standards of data security and operational integrity." },
-        { title: "End-to-End Encryption", text: "Your files are encrypted before they even leave your device." },
-        { title: "99.9% Uptime SLA", text: "Reliability you can build your business on." },
+        { title: "No passwords", text: "You sign in with Google. Sessions use tokens signed with a key unique to you, and signing out revokes every one of them." },
+        { title: "Your data stays yours", text: "Every request is scoped to your account, and automated tests check that nobody can read or change another person's notes, events or documents." },
+        { title: "Encrypted in transit", text: "Connections to the app and to the database use TLS. Uploaded PDFs are read in memory; only their text passages are kept." },
     ];
     const faqs = [
-        { question: "Is my data secure?", answer: "Absolutely. We use AES-256 encryption at rest and TLS 1.3 in transit. Your documents are processed in ephemeral containers and are never used to train our public models without explicit consent." },
-        { question: "What file formats do you support?", answer: "Currently we support PDF, DOCX, TXT, MD, and CSV. We are actively working on adding support for Excel spreadsheets and PowerPoint presentations." },
-        { question: "Can I cancel my subscription?", answer: "Yes, you can cancel anytime from your account settings. You will retain access until the end of your complete billing cycle." },
+        { question: "Where does my data go?", answer: "Notes, events and document passages are stored in MongoDB. To answer a question, the relevant passages and your question are sent to OpenAI, whose API doesn't train on this data by default." },
+        { question: "What can I upload?", answer: "PDFs of up to 20 MB and 100 pages. Other formats, and several documents at once, are on the roadmap." },
+        { question: "Does it cost anything?", answer: "No. ChatDoc is a personal project: free to use while it's online, and open source so you can run your own copy." },
     ];
 
     return (
@@ -53,8 +54,8 @@ export default function Trust() {
             <div className="home-container">
                 <div className="max-w-4xl">
                     <h2 id="security-title" className="home-display home-h2">
-                        <Reveal as="span" className="block home-outline">Enterprise-Grade</Reveal>
-                        <Reveal as="span" delay={0.1} className="block">Security & Privacy</Reveal>
+                        <Reveal as="span" className="block home-outline">Security,</Reveal>
+                        <Reveal as="span" delay={0.1} className="block">plainly</Reveal>
                     </h2>
 
                     <div className="mt-16">

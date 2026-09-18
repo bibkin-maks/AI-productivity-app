@@ -12,7 +12,7 @@ import { PALETTES, PALETTE_STORAGE_KEY, savedPalette } from "../components/home/
 
 // Landing Sections
 import Features from "../components/landing/Features";
-import Pricing from "../components/landing/Pricing";
+import OpenSource, { REPO_URL } from "../components/landing/OpenSource";
 import Team from "../components/landing/Team";
 import Trust from "../components/landing/Trust";
 
@@ -29,8 +29,8 @@ function initialPalette() {
 const SECTION_LINKS = [
   { label: "How it works", href: "#how" },
   { label: "Security", href: "#security" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Team", href: "#team" },
+  { label: "Open source", href: "#open-source" },
+  { label: "Built by", href: "#built-by" },
 ];
 
 // ========================================================
@@ -69,7 +69,7 @@ function Header({ onLogin, isAuthed, user }) {
             <>
               <button type="button" onClick={onLogin} className="home-nav__link hidden sm:inline">Login</button>
               <button type="button" onClick={onLogin} className="home-btn home-btn--ghost !min-h-[40px] !px-5 text-sm">
-                Get Started
+                Try it free
               </button>
             </>
           )}
@@ -89,7 +89,7 @@ function Hero({ onLogin, isAuthed }) {
         <div className="max-w-3xl">
           <Reveal as="p" className="home-label mb-8">
             <span className="inline-block w-2 h-2 rounded-full bg-[var(--home-accent)] mr-3 align-middle" aria-hidden="true" />
-            Feature Update <span aria-hidden="true">·</span> <span className="text-white">Multi-Format Support</span>
+            Personal project <span aria-hidden="true">·</span> <span className="text-white">Open source</span>
           </Reveal>
 
           <h1 id="hero-title" className="home-display home-h1">
@@ -99,16 +99,16 @@ function Hero({ onLogin, isAuthed }) {
           </h1>
 
           <Reveal delay={0.3} as="p" className="home-lead mt-10 max-w-2xl">
-            Unlock <strong>instant answers, summaries, and citations</strong> from your files <strong>using AI</strong>.
+            Ask questions about a PDF, keep notes, plan your week and talk to a voice assistant, <strong>in one calm workspace.</strong>
           </Reveal>
 
           <Reveal delay={0.4} className="flex flex-wrap items-center gap-4 mt-12">
             {!isAuthed ? (
               <>
                 <button type="button" onClick={onLogin} className="home-btn home-btn--solid">
-                  Start for free <span className="home-btn__arrow" aria-hidden="true">→</span>
+                  Try it free <span className="home-btn__arrow" aria-hidden="true">→</span>
                 </button>
-                <a href="#how" className="home-btn home-btn--ghost">View Demo</a>
+                <a href="#how" className="home-btn home-btn--ghost">How it works</a>
               </>
             ) : (
               <button type="button" onClick={onLogin} className="home-btn home-btn--solid">
@@ -118,7 +118,7 @@ function Hero({ onLogin, isAuthed }) {
           </Reveal>
 
           <Reveal delay={0.5} as="p" className="home-label mt-10">
-            Trusted by <span className="text-white">10,000+</span> pros
+            Built with <span className="text-white">React · FastAPI · MongoDB · OpenAI</span>
           </Reveal>
         </div>
       </div>
@@ -140,7 +140,7 @@ function UploadCta({ isAuthed, onLogin }) {
           ) : (
             <button type="button" onClick={onLogin} className="home-drop">
               <span className="home-drop__underline">Drop a PDF here to start chatting</span>
-              <span className="home-label block mt-8">Sign in with Google to upload · PDF · DOCX · TXT</span>
+              <span className="home-label block mt-8">Sign in with Google to upload · PDF up to 20 MB</span>
             </button>
           )}
         </Reveal>
@@ -154,9 +154,9 @@ function UploadCta({ isAuthed, onLogin }) {
 // ========================================================
 function Footer() {
   const columns = [
-    { title: "Product", links: [["Features", "#how"], ["Pricing", "#pricing"], ["API", null]] },
-    { title: "Company", links: [["About Us", null], ["Careers", null], ["Legal", null]] },
-    { title: "Connect", links: [["Twitter", null], ["LinkedIn", null], ["GitHub", null]] },
+    { title: "Product", links: [["How it works", "#how"], ["Security", "#security"], ["Open source", "#open-source"]] },
+    { title: "Project", links: [["Source code", REPO_URL], ["Run it yourself", `${REPO_URL}#run-it-locally`], ["License (MIT)", `${REPO_URL}/blob/main/LICENSE`]] },
+    { title: "Built with", links: [["React · Vite", null], ["FastAPI · MongoDB", null], ["OpenAI · Three.js", null]] },
   ];
 
   return (
@@ -165,7 +165,7 @@ function Footer() {
         <div className="grid gap-12 md:grid-cols-4 mb-20">
           <div>
             <p className="home-wordmark !text-xl mb-4">ChatDoc</p>
-            <p className="home-body !text-base">Transforming documents into intelligence.</p>
+            <p className="home-body !text-base">Your documents, notes and days, in one calm workspace.</p>
           </div>
           {columns.map((col) => (
             <div key={col.title}>
@@ -173,14 +173,18 @@ function Footer() {
               <ul className="space-y-3">
                 {col.links.map(([label, href]) => (
                   <li key={label}>
-                    {href ? <a href={href}>{label}</a> : <span className="text-[var(--home-text-3)] text-[15px]">{label}</span>}
+                    {href ? (
+                      <a href={href} {...(href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>{label}</a>
+                    ) : (
+                      <span className="text-[var(--home-text-3)] text-[15px]">{label}</span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <p className="home-label !text-xs">© 2025 Purr Assist AI Inc. All rights reserved.</p>
+        <p className="home-label !text-xs">© 2026 bibkin-maks · MIT License</p>
       </div>
     </footer>
   );
@@ -229,7 +233,7 @@ export default function Main() {
             <Hero onLogin={handleLogin} isAuthed={isAuthed} />
             <Features />
             <Trust />
-            <Pricing onSelect={handleLogin} />
+            <OpenSource onSelect={handleLogin} />
             <Team />
             <UploadCta isAuthed={isAuthed} onLogin={handleLogin} />
           </main>

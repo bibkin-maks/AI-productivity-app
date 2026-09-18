@@ -2,16 +2,16 @@ import Reveal from '../home/Reveal';
 
 const features = [
     {
-        title: "Universal Upload",
-        description: "Drag & drop PDFs, Word docs, or text files. We handle parsing efficiently so you can focus on insights.",
+        title: "Upload a PDF",
+        description: "Drop in a PDF of up to 20 MB. It's read in memory, split into passages and indexed once, so questions stay fast.",
     },
     {
-        title: "AI Analysis",
-        description: "Our advanced models read and understand your documents instantly, extracting key data points and summaries.",
+        title: "Ask anything",
+        description: "Ask in plain language. Answers draw on the most relevant passages of your document, and the assistant remembers the conversation.",
     },
     {
-        title: "Natural Chat",
-        description: "Ask questions in plain English. Get answers powered by context-aware AI that cites strictly from your files.",
+        title: "Plan your days",
+        description: "Keep notes and a calendar next to your documents, see today at a glance, or just talk to Purr, the voice assistant.",
     }
 ];
 
@@ -47,7 +47,7 @@ export default function Features() {
                             <Reveal as="span" delay={0.1} className="block">Works</Reveal>
                         </h2>
                         <Reveal delay={0.2} as="p" className="home-lead mt-8">
-                            Transform your static documents into <strong>interactive knowledge bases</strong> in seconds.
+                            From a PDF to <strong>answers in seconds</strong>, with your notes and plans right beside them.
                         </Reveal>
                     </div>
                 </div>
