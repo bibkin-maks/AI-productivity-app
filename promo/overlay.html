@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Promo Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500;700&family=Oswald:wght@300;600&family=IBM+Plex+Mono:wght@400;600&display=block" rel="stylesheet">
+<style>
+  :root {
+    --accent: #ffb547;
+    --blue: #3b8dff;
+    --ink: #ffffff;
+    --ink-2: #d1d5db;
+    --ink-3: #9ca3af;
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; background: transparent; }
+  body { position: relative; font-family: Montserrat, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .layer { position: absolute; inset: 0; }
+
+  /* legibility */
+  .dim { background: #000; }
+  .vignette {
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.6) 26%, rgba(0,0,0,0) 44%),
+      linear-gradient(0deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%);
+  }
+
+  /* type */
+  .label { font-size: 22px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); display: flex; align-items: center; gap: 16px; }
+  .label b { color: var(--ink); font-weight: 500; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); flex: none; }
+  .display { font-family: Oswald, sans-serif; font-weight: 600; text-transform: uppercase; line-height: .95; letter-spacing: .005em; }
+  .line { display: block; overflow: hidden; padding: .04em 0 .06em; margin: -.04em 0 -.06em; }
+  .line > span { display: block; transform-origin: 0 100%; }
+  .outline { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+  .period { color: var(--accent); }
+  .lead { font-weight: 200; color: var(--ink-2); line-height: 1.25; }
+  .lead strong { font-weight: 700; color: var(--ink); }
+
+  /* progress */
+  .progress { position: absolute; top: 40px; left: 72px; right: 72px; display: flex; gap: 10px; }
+  .seg { flex: 1; height: 4px; border-radius: 4px; background: rgba(255,255,255,.18); overflow: hidden; }
+  .seg i { display: block; height: 100%; background: var(--ink); transform-origin: 0 50%; transform: scaleX(0); }
+
+  /* feature scene */
+  .scene { position: absolute; inset: 0; }
+  .scene .label { position: absolute; top: 92px; left: 72px; }
+  .scene .display { position: absolute; top: 142px; left: 72px; font-size: 112px; }
+  .scene .lead { position: absolute; top: 378px; left: 72px; width: 900px; font-size: 32px; }
+
+  .stage { position: absolute; left: 309px; top: 500px; width: 462px; height: 972px; perspective: 1400px; }
+  .float { width: 100%; height: 100%; }
+  .phone {
+    width: 100%; height: 100%; border-radius: 70px; background: #0b0b0d; padding: 12px; position: relative;
+    box-shadow: 0 0 0 2px rgba(255,255,255,.16), 0 0 0 9px #1a1a1d, 0 0 0 11px rgba(255,255,255,.08),
+                0 50px 120px rgba(0,0,0,.75), 0 0 140px rgba(255,181,71,.14);
+    transform-origin: 50% 100%;
+  }
+  .screen { width: 438px; height: 948px; border-radius: 58px; overflow: hidden; position: relative; background: #121212; }
+  .screen img { width: 100%; display: block; }
+  .status { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 6px 40px 0 44px; font-size: 19px; font-weight: 600; background: #121212; }
+  .status i { font-style: normal; letter-spacing: 2px; font-size: 15px; opacity: .9; }
+  .island { position: absolute; top: 12px; left: 50%; width: 126px; height: 36px; margin-left: -63px; border-radius: 20px; background: #000; z-index: 3; }
+  .focus { position: absolute; border-radius: 22px; border: 3px solid var(--accent); box-shadow: 0 0 0 6px rgba(255,181,71,.18), 0 0 40px rgba(255,181,71,.45); z-index: 2; }
+
+  .chip {
+    position: absolute; z-index: 4; display: flex; align-items: center; gap: 14px; white-space: nowrap;
+    padding: 18px 26px 18px 20px; border-radius: 999px; font-size: 26px; font-weight: 500;
+    background: rgba(16,16,18,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(255,255,255,.16); box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  }
+  .chip .ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #000; font-size: 22px; font-weight: 700; flex: none; }
+  .chip.blue .ic { background: var(--blue); color: #fff; }
+
+  /* intro / outro */
+  .intro .label { position: absolute; top: 92px; left: 72px; }
+  .intro .display { position: absolute; left: 72px; top: 150px; bottom: auto; font-size: 104px; }
+  .intro .lead { position: absolute; left: 72px; top: auto; bottom: 120px; width: 900px; font-size: 40px; }
+
+  .outro { text-align: center; }
+  .ascii { position: absolute; left: 232px; top: 166px; width: 616px; height: 640px; }
+  .mark { position: absolute; left: 0; right: 0; top: 812px; display: flex; justify-content: center; gap: 2px;
+          font-family: Oswald, sans-serif; font-weight: 600; font-size: 132px; line-height: 1; letter-spacing: .02em; }
+  .mark span { display: inline-block; width: .56em; }
+  .mark span.hot { color: var(--accent); text-shadow: 0 0 24px rgba(255,181,71,.6); }
+  .mark span.cool { color: transparent; -webkit-text-stroke: 2px #fff; }
+  .outro .tag { position: absolute; left: 0; right: 0; top: 970px; font-size: 32px; font-weight: 200; color: var(--ink-2); }
+  .outro .tag strong { font-weight: 700; color: var(--ink); }
+  .prompt {
+    position: absolute; top: 1052px; left: 50%; transform: translateX(-50%); white-space: pre;
+    font-family: "IBM Plex Mono", monospace; font-size: 34px; font-weight: 600; color: #fff;
+    padding: 20px 32px; border-radius: 16px; border: 1.5px solid rgba(255,255,255,.22);
+    background: rgba(8,8,10,.72); box-shadow: 0 0 60px rgba(123,92,255,.25);
+  }
+  .prompt .caret { color: var(--accent); }
+  .prompt .cursor { color: var(--accent); }
+  .stackline { position: absolute; left: 0; right: 0; top: 1182px; font-family: "IBM Plex Mono", monospace;
+               font-size: 22px; letter-spacing: .12em; color: var(--ink-3); }
+</style>
+</head>
+<body>
+  <div class="layer dim" id="dim"></div>
+  <div class="layer vignette" id="vignette"></div>
+  <div class="progress" id="progress"></div>
+  <div id="root"></div>
+
+<script type="module">
+const T = (s) => s * 1000;
+const EASE = "cubic-bezier(.16,1,.3,1)";
+const SPRING = "cubic-bezier(.34,1.56,.64,1)";
+const IN = "cubic-bezier(.7,0,.84,0)";
+
+// fill "both" for entrances (hidden before they start); exits only fill forwards,
+// otherwise their first keyframe would un-hide the element before its entrance
+function enter(el, frames, at, dur = 0.9, easing = EASE) {
+  el.animate(frames, { delay: T(at), duration: T(dur), easing, fill: "both" });
+}
+function leave(el, frames, at, dur = 0.45, easing = IN) {
+  el.animate(frames, { delay: T(at), duration: T(dur), easing, fill: "forwards" });
+}
+const h = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const root = document.getElementById("root");
+
+// masked line reveal: each word block rises out of its own line
+function revealLines(container, at, stagger = 0.12) {
+  container.querySelectorAll(".line > span").forEach((span, i) => {
+    enter(span, [{ transform: "translateY(110%) rotate(5deg)" }, { transform: "translateY(0) rotate(0)" }], at + i * stagger, 1.0);
+  });
+}
+function hideLines(container, at) {
+  container.querySelectorAll(".line > span").forEach((span, i) => {
+    leave(span, [{ transform: "translateY(0)" }, { transform: "translateY(-110%)" }], at + i * 0.05, 0.4);
+  });
+}
+function fadeUp(el, at, dur = 0.8, dist = 24) {
+  enter(el, [{ opacity: 0, transform: `translateY(${dist}px)`, filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], at, dur);
+}
+function fadeOut(el, at, dist = -24) {
+  leave(el, [{ opacity: 1, transform: "none" }, { opacity: 0, transform: `translateY(${dist}px)` }], at, 0.4);
+}
+
+// ---------- global layers ----------
+const dim = document.getElementById("dim");
+dim.animate(
+  [{ opacity: 0.2, offset: 0 }, { opacity: 0.2, offset: 3.8 / 30 }, { opacity: 0.6, offset: 4.4 / 30 },
+   { opacity: 0.6, offset: 25.9 / 30 }, { opacity: 0.8, offset: 26.5 / 30 }, { opacity: 0.8, offset: 1 }],
+  { duration: T(30), fill: "both" });
+const vignette = document.getElementById("vignette");
+vignette.animate([{ opacity: 0.55 }, { opacity: 0.55, offset: 3.8 / 30 }, { opacity: 1, offset: 4.4 / 30 }, { opacity: 1, offset: 25.9 / 30 }, { opacity: 0.4, offset: 26.6 / 30 }, { opacity: 0.4 }], { duration: T(30), fill: "both" });
+
+// ---------- intro ----------
+const intro = h(`
+  <div class="scene intro">
+    <p class="label"><span class="dot"></span>Introducing <b>ChatDoc</b></p>
+    <h1 class="display">
+      <span class="line"><span class="outline">Your documents.</span></span>
+      <span class="line"><span>Your notes.</span></span>
+      <span class="line"><span>Your days<span class="period">.</span></span></span>
+    </h1>
+    <p class="lead">One calm workspace, <strong>powered by AI.</strong></p>
+  </div>`);
+root.append(intro);
+fadeUp(intro.querySelector(".label"), 0.2);
+enter(intro.querySelector(".dot"), [{ transform: "scale(0)" }, { transform: "scale(1)" }], 0.2, 0.7, SPRING);
+revealLines(intro.querySelector(".display"), 0.45, 0.32);
+fadeUp(intro.querySelector(".lead"), 1.9, 1.0);
+hideLines(intro.querySelector(".display"), 3.75);
+fadeOut(intro.querySelector(".label"), 3.75);
+fadeOut(intro.querySelector(".lead"), 3.8);
+
+// ---------- feature scenes ----------
+const SCREEN_SCALE = 438 / 390; // screenshot CSS px → phone screen px
+const FEATURES = [
+  { key: "chat", at: 4.2, num: "01", name: "Document chat", l1: "Ask your", l2: "docs",
+    lead: "Upload a document, ask anything, get <strong>answers from the source.</strong>",
+    focus: [88, 396, 288, 218],
+    chips: [{ text: "Answers grounded in your PDF", icon: "✓", x: 56, y: 760 }, { text: "Remembers the conversation", icon: "↺", x: 470, y: 1236, blue: true }] },
+  { key: "notes", at: 8.6, num: "02", name: "Notes", l1: "Write it", l2: "down",
+    lead: "Notebooks with <strong>rich text, tables and checklists.</strong>",
+    focus: [14, 196, 362, 112],
+    chips: [{ text: "Tables & checklists", icon: "✓", x: 60, y: 700 }, { text: "Favourites & search", icon: "★", x: 560, y: 1000, blue: true }] },
+  { key: "calendar", at: 13.0, num: "03", name: "Calendar", l1: "Plan the", l2: "week",
+    lead: "<strong>Recurring events</strong> for tasks, projects, workouts and spending.",
+    focus: [74, 398, 300, 262],
+    chips: [{ text: "Repeats weekly, daily, custom", icon: "↻", x: 44, y: 760 }, { text: "4 event types", icon: "◆", x: 640, y: 1070, blue: true }] },
+  { key: "diary", at: 17.4, num: "04", name: "Diary", l1: "Own the", l2: "day",
+    lead: "Today's plan, <strong>progress and what's next</strong> at a glance.",
+    focus: [12, 296, 366, 432],
+    chips: [{ text: "43% of today done", icon: "%", x: 40, y: 700 }, { text: "Next up: onboarding v2", icon: "→", x: 470, y: 1110, blue: true }] },
+  { key: "purr", at: 21.8, num: "05", name: "Purr Assist", l1: "Just ask", l2: "Purr",
+    lead: "A voice assistant that <strong>listens, answers and talks back.</strong>",
+    focus: [14, 76, 362, 272],
+    chips: [{ text: "Voice in, voice out", icon: "◉", x: 50, y: 720 }, { text: "Local neural voices", icon: "♪", x: 560, y: 1200, blue: true }] },
+];
+const SCENE_LEN = 4.4;
+
+const progress = document.getElementById("progress");
+FEATURES.forEach((f) => {
+  const seg = h(`<div class="seg"><i></i></div>`);
+  progress.append(seg);
+  enter(seg.firstElementChild, [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], f.at, SCENE_LEN, "linear");
+});
+enter(progress, [{ opacity: 0, transform: "translateY(-10px)" }, { opacity: 1, transform: "none" }], 4.2, 0.6);
+leave(progress, [{ opacity: 1 }, { opacity: 0 }], 26.0, 0.4);
+
+FEATURES.forEach((f, idx) => {
+  const s = f.at;
+  const end = s + SCENE_LEN;
+  const last = idx === FEATURES.length - 1;
+  const [fx, fy, fw, fh] = f.focus.map((v) => v * SCREEN_SCALE);
+  const scene = h(`
+    <div class="scene">
+      <p class="label"><span class="dot"></span>${f.num} &nbsp;—&nbsp; <b>${f.name}</b></p>
+      <h2 class="display">
+        <span class="line"><span class="outline">${f.l1}</span></span>
+        <span class="line"><span>${f.l2}<span class="period">.</span></span></span>
+      </h2>
+      <p class="lead">${f.lead}</p>
+      <div class="stage"><div class="float"><div class="phone">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="status"><span>9:41</span><i>▂▄▆ ◔ ▭</i></div>
+          <img src="out/shots/${f.key}.png" alt="">
+          <div class="focus" style="left:${fx}px;top:${fy + 50}px;width:${fw}px;height:${fh}px"></div>
+        </div>
+      </div></div></div>
+    </div>`);
+  f.chips.forEach((c) => scene.append(h(`<div class="chip ${c.blue ? "blue" : ""}" style="left:${c.x}px;top:${c.y}px"><span class="ic">${c.icon}</span>${c.text}</div>`)));
+  root.append(scene);
+
+  // entrances
+  fadeUp(scene.querySelector(".label"), s + 0.1, 0.7);
+  enter(scene.querySelector(".dot"), [{ transform: "scale(0)" }, { transform: "scale(1)" }], s + 0.1, 0.7, SPRING);
+  revealLines(scene.querySelector(".display"), s + 0.18, 0.13);
+  fadeUp(scene.querySelector(".lead"), s + 0.55, 0.9);
+  const phone = scene.querySelector(".phone");
+  enter(phone, [
+    { opacity: 0, transform: "translateY(460px) rotateX(28deg) scale(.88)", filter: "blur(14px)" },
+    { opacity: 1, transform: "translateY(0) rotateX(0) scale(1)", filter: "blur(0)" },
+  ], s + 0.25, 1.25);
+  // slow drift while on screen so the frame never sits still
+  enter(scene.querySelector(".float"), [{ transform: "translateY(18px)" }, { transform: "translateY(-18px)" }], s + 0.25, SCENE_LEN, "cubic-bezier(.45,0,.55,1)");
+  const focus = scene.querySelector(".focus");
+  enter(focus, [
+    { opacity: 0, transform: "scale(1.08)", clipPath: "inset(0 100% 0 0 round 22px)" },
+    { opacity: 1, transform: "scale(1)", clipPath: "inset(0 0% 0 0 round 22px)" },
+  ], s + 1.45, 0.8);
+  scene.querySelectorAll(".chip").forEach((chip, i) => {
+    enter(chip, [
+      { opacity: 0, transform: "translateY(36px) scale(.6)", filter: "blur(8px)" },
+      { opacity: 1, transform: "none", filter: "blur(0)" },
+    ], s + 1.75 + i * 0.3, 0.75, SPRING);
+  });
+
+  // exits (the next scene enters on top as this one leaves)
+  const out = end - 0.42;
+  fadeOut(scene.querySelector(".label"), out);
+  hideLines(scene.querySelector(".display"), out);
+  fadeOut(scene.querySelector(".lead"), out);
+  scene.querySelectorAll(".chip").forEach((chip, i) =>
+    leave(chip, [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.8)" }], out + i * 0.05, 0.3));
+  leave(focus, [{ opacity: 1 }, { opacity: 0 }], out, 0.25);
+  leave(phone, [
+    { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
+    { opacity: 0, transform: last ? "translateY(120px) scale(.94)" : "translateY(-140px) scale(.94)", filter: "blur(10px)" },
+  ], out, 0.5);
+});
+
+// ---------- outro: ASCII logo, decoding wordmark, terminal prompt ----------
+const O = 26.2;
+const outro = h(`
+  <div class="scene outro">
+    <canvas class="ascii" width="616" height="640"></canvas>
+    <div class="mark">${[..."CHATDOC"].map(() => "<span></span>").join("")}</div>
+    <p class="tag">Your documents, notes and days, <strong>one calm workspace.</strong></p>
+    <div class="prompt"><span class="caret">&gt;</span> <span class="typed"></span><span class="cursor">█</span></div>
+    <p class="stackline">react · fastapi · mongodb · openai · docker</p>
+  </div>`);
+root.append(outro);
+fadeUp(outro.querySelector(".tag"), O + 1.75, 0.9);
+enter(outro.querySelector(".prompt"), [
+  { opacity: 0, transform: "translateX(-50%) translateY(24px) scale(.94)" },
+  { opacity: 1, transform: "translateX(-50%) translateY(0) scale(1)" },
+], O + 2.1, 0.6, SPRING);
+fadeUp(outro.querySelector(".stackline"), O + 2.85, 0.8, 14);
+
+// Logo geometry (viewBox 39×40): four propeller blades around a cat head
+const BLADES = [
+  "M23.4363 32.7048C22.5199 33.9689 20.5336 33.4926 20.2914 31.9507L18.9406 23.346C18.7993 22.4461 19.4224 21.6046 20.3245 21.4774C20.8128 21.4086 21.3061 21.5648 21.6659 21.9018L26.2585 26.2033C26.9017 26.8059 26.9966 27.7934 26.4789 28.5076L23.4363 32.7048Z",
+  "M15.718 6.29134C16.6344 5.02716 18.6207 5.50348 18.8629 7.04538L20.2137 15.65C20.355 16.55 19.7319 17.3915 18.8298 17.5187C18.3415 17.5875 17.8482 17.4313 17.4884 17.0943L12.8958 12.7928C12.2525 12.1902 12.1577 11.2027 12.6754 10.4885L15.718 6.29134Z",
+  "M6.26034 23.2516C5.00123 22.3341 5.48035 20.3511 7.01986 20.108L15.5936 18.7537C16.4974 18.611 17.3426 19.2371 17.4696 20.1432C17.5381 20.632 17.3821 21.1257 17.0456 21.487L12.7634 26.0847C12.1597 26.7327 11.1677 26.828 10.4525 26.3068L6.26034 23.2516Z",
+  "M32.6225 15.5296C33.8816 16.4472 33.4025 18.4301 31.863 18.6732L23.2892 20.0275C22.3854 20.1702 21.5402 19.5442 21.4132 18.638C21.3447 18.1492 21.5007 17.6556 21.8372 17.2942L26.1195 12.6965C26.7231 12.0486 27.7152 11.9532 28.4303 12.4744L32.6225 15.5296Z",
+].map((d) => new Path2D(d));
+const HEAD = new Path2D("M27.9533 19.5152L25.8805 21.7892C22.3891 25.6176 16.4734 25.873 12.6671 22.3613L10.4062 20.274L12.4473 18.0394V18.0369C11.35 15.9 11.1 10.2 11.1 10.2C13.9 11.8 15.9167 14.2846 15.9167 14.2846C17.6111 13.3343 19.9159 13.3711 21.6835 14.1643C21.9277 13.9384 23.95 11.4 26.2 9.8C26.2 9.8 26.45 15.4 25.6778 17.4132L27.9533 19.5152Z");
+const HUB = [19.5, 19.45];
+const EYES = [[16.35, 18.5], [22.55, 18.5]];
+
+const COLS = 44, ROWS = 40, CW = 14, CH = 16, SS = 5;       // character grid + supersampling
+const UNIT = 19.5;                                         // screen px per logo unit
+const ascii = outro.querySelector(".ascii");
+const actx = ascii.getContext("2d");
+const layer = () => { const c = document.createElement("canvas"); c.width = COLS * SS; c.height = ROWS * SS; return c.getContext("2d", { willReadFrequently: true }); };
+const L = { blade: layer(), trail: layer(), head: layer(), eyes: layer() };
+const RAMP = " .:-=+*#%@";
+const GLYPHS = "<>/\\|_-+*#%@$&0123456789abcdef";
+
+function toLogo(ctx) {       // logo units → supersampled layer pixels, logo centred on the hub
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.setTransform(UNIT * SS / CW, 0, 0, UNIT * SS / CH, ctx.canvas.width / 2, ctx.canvas.height / 2);
+  ctx.translate(-HUB[0], -HUB[1]);
+}
+function drawBlades(ctx, angle, alpha = 1) {
+  ctx.save();
+  ctx.translate(HUB[0], HUB[1]); ctx.rotate(angle); ctx.translate(-HUB[0], -HUB[1]);
+  ctx.globalAlpha = alpha; ctx.fillStyle = "#fff";
+  BLADES.forEach((b) => ctx.fill(b));
+  ctx.restore();
+}
+function coverage(ctx) {
+  const data = ctx.getImageData(0, 0, COLS * SS, ROWS * SS).data;
+  const out = new Float32Array(COLS * ROWS);
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    let sum = 0;
+    for (let y = 0; y < SS; y++) for (let x = 0; x < SS; x++) sum += data[(((r * SS + y) * COLS * SS) + c * SS + x) * 4 + 3];
+    out[r * COLS + c] = sum / (SS * SS * 255);
+  }
+  return out;
+}
+const hash = (a, b) => { let x = Math.imul(a ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(b + 0x632be5ab, 0xc2b2ae35); x ^= x >>> 13; x = Math.imul(x, 0x27d4eb2f); return ((x ^ (x >>> 16)) >>> 0) / 4294967296; };
+
+// propeller speed (rev/s): spins up after the logo decodes, kicks on the final hit, settles
+function speed(t) {
+  if (t < O + 0.75) return 0;
+  if (t < O + 1.35) { const u = (t - O - 0.75) / 0.6; return 1.5 * u * u; }
+  if (t < 28.4) { const u = (t - O - 1.35) / (28.4 - O - 1.35); return 1.5 - 0.95 * (1 - (1 - u) ** 3); }
+  return 0.55 + 0.5 * Math.exp(-(t - 28.4) / 0.35);
+}
+const ANGLE = []; { let a = 0; for (let i = 0; i <= 30 * 600; i++) { ANGLE.push(a); a += speed(i / 600) * 2 * Math.PI / 600; } }
+const angleAt = (t) => ANGLE[Math.max(0, Math.min(ANGLE.length - 1, Math.round(t * 600)))];
+
+const mix = (a, b, u) => a.map((v, i) => Math.round(v + (b[i] - v) * u));
+const VIOLET = [123, 92, 255], BLUE = [59, 141, 255], GOLD = [255, 181, 71], CREAM = [255, 244, 224];
+
+function drawLogo(t) {
+  actx.clearRect(0, 0, ascii.width, ascii.height);
+  if (t < O - 0.05) return;
+  const angle = angleAt(t) - 0.12;
+  const spd = speed(t);
+
+  toLogo(L.blade); drawBlades(L.blade, angle);
+  toLogo(L.trail);
+  for (let k = 1; k <= 6; k++) drawBlades(L.trail, angle - k * spd * 2 * Math.PI * (1 / 30) * 0.45, 0.55 - k * 0.08);
+  toLogo(L.head); L.head.fillStyle = "#fff"; L.head.fill(HEAD);
+  // eyes: punched out of the head, drawn in gold; one blink near the end
+  const blink = Math.max(0, 1 - Math.abs(t - 29.42) / 0.08);
+  toLogo(L.eyes); L.eyes.fillStyle = "#fff";
+  EYES.forEach(([x, y]) => { L.eyes.beginPath(); L.eyes.ellipse(x, y, 1.0, Math.max(0.05, 1.25 * (1 - 0.9 * Math.min(1, blink))), 0, 0, Math.PI * 2); L.eyes.fill(); });
+  L.head.globalCompositeOperation = "destination-out";
+  EYES.forEach(([x, y]) => { L.head.beginPath(); L.head.ellipse(x, y, 1.25, 1.5, 0, 0, Math.PI * 2); L.head.fill(); });
+  L.head.globalCompositeOperation = "source-over";
+
+  const cb = coverage(L.blade), ct = coverage(L.trail), ch = coverage(L.head), ce = coverage(L.eyes);
+  actx.font = "600 21px 'IBM Plex Mono', monospace";
+  actx.textAlign = "center"; actx.textBaseline = "middle";
+  const frame = Math.round(t * 30);
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const i = r * COLS + c;
+    const cx = (c + 0.5) / COLS - 0.5, cy = (r + 0.5) / ROWS - 0.5;
+    const dist = Math.min(1, Math.hypot(cx, cy * 0.95) / 0.5);
+    // radial decode: each cell scrambles, then locks to its real character
+    const reveal = O + 0.12 + dist * 0.72 + hash(i, 7) * 0.12;
+    if (t < reveal - 0.32) continue;
+    const scrambling = t < reveal;
+
+    let cov = 0, color = null, glow = 0, alpha = 1;
+    // cell centre in logo units, relative to the hub → shading
+    const ux = ((c + 0.5) * CW - ascii.width / 2) / UNIT, uy = ((r + 0.5) * CH - ascii.height / 2) / UNIT;
+    const radU = Math.min(1, Math.hypot(ux, uy) / 14);
+    if (ce[i] > 0.12) { cov = 0.75 + ce[i] * 0.25; color = GOLD; glow = 14; }
+    else if (ch[i] > 0.08) {
+      cov = ch[i] * (0.5 + 0.5 * Math.min(1, Math.max(0, (6 - uy) / 12)));   // lit from above
+      color = mix(CREAM, [214, 204, 255], Math.min(1, Math.max(0, (uy + 2) / 9)));
+      glow = 3;
+    } else if (cb[i] > 0.06) {
+      cov = cb[i] * (0.3 + 0.7 * radU);                                   // denser towards the tips
+      color = cb[i] < 0.5 ? mix(GOLD, VIOLET, cb[i] / 0.5) : mix(VIOLET, BLUE, radU);
+      glow = 4;
+    } else if (ct[i] > 0.05) { cov = 0.15 + ct[i] * 0.25; color = VIOLET; alpha = 0.5; }
+    if (!color) continue;
+
+    let glyph = RAMP[Math.min(RAMP.length - 1, Math.max(1, Math.floor(cov * RAMP.length)))];
+    if (scrambling) {
+      glyph = GLYPHS[Math.floor(hash(i, frame) * GLYPHS.length)];
+      color = GOLD; alpha = 0.35 + 0.65 * (1 - (reveal - t) / 0.32); glow = 0;
+    }
+    actx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${alpha})`;
+    actx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},0.8)`;
+    actx.shadowBlur = glow;
+    actx.fillText(glyph, c * CW + CW / 2, r * CH + CH / 2);
+  }
+  actx.shadowBlur = 0;
+}
+
+// wordmark decodes letter by letter; CHAT solid, DOC outlined like the headlines
+const markSpans = [...outro.querySelectorAll(".mark span")];
+const WORD = "CHATDOC", MARK_GLYPHS = "ABCDEFGHKMNPRSTUVWXYZ#%&@0123456789";
+function drawMark(t) {
+  markSpans.forEach((span, i) => {
+    const start = O + 1.0 + i * 0.05, settle = O + 1.3 + i * 0.07;
+    if (t < start) { span.textContent = ""; span.className = ""; return; }
+    if (t < settle) { span.textContent = MARK_GLYPHS[Math.floor(hash(i + 99, Math.round(t * 30)) * MARK_GLYPHS.length)]; span.className = "hot"; return; }
+    span.textContent = WORD[i]; span.className = i >= 4 ? "cool" : "";
+  });
+}
+
+// terminal prompt types itself on the final hit, then the cursor blinks
+const typed = outro.querySelector(".typed"), cursor = outro.querySelector(".cursor");
+const PROMPT = "link in the comments";
+function drawPrompt(t) {
+  const n = Math.max(0, Math.min(PROMPT.length, Math.floor((t - 28.4) / 0.03)));
+  typed.textContent = PROMPT.slice(0, n);
+  cursor.style.opacity = t < 28.4 + PROMPT.length * 0.03 ? 1 : (Math.floor((t - 28.4) / 0.45) % 2 ? 0 : 1);
+}
+
+// ---------- frame control for the renderer ----------
+const animations = document.getAnimations();
+animations.forEach((a) => a.pause());
+window.seek = (t) => {
+  animations.forEach((a) => (a.currentTime = T(t)));
+  drawLogo(t); drawMark(t); drawPrompt(t);
+};
+window.seek(0);
+Promise.all([document.fonts.ready, ...[...document.images].map((img) => img.decode().catch(() => {}))])
+  .then(() => (window.ready = true));
+</script>
+</body>
+</html>
