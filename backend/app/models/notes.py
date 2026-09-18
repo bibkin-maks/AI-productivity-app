@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from datetime import datetime, timezone
 import uuid
+from datetime import datetime, timezone
 from typing import Optional
+
+from pydantic import BaseModel, Field
+
 
 class Notebook(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))

@@ -1,0 +1,8 @@
+-r requirements.txt
+
+# Tests run against an in-memory MongoDB; OpenAI and Google are stubbed
+pytest
+pytest-asyncio
+httpx
+mongomock-motor
+ruff

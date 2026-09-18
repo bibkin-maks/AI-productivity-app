@@ -1,11 +1,20 @@
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, Response, UploadFile
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    Response,
+    UploadFile,
+)
 
-from app.dependencies import get_current_user
 from app.core.limiter import limiter
+from app.dependencies import get_current_user
 from app.models.chat import SpeakRequest
+from app.services.ai import client as openai_client
 from app.services.speech import DEFAULT_VOICE, available_voices, synthesize
 from app.services.transcribe import transcribe
-from app.services.ai import client as openai_client
 
 router = APIRouter()
 

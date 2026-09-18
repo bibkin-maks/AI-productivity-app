@@ -3,6 +3,8 @@
 **/__pycache__/
 **/node_modules/
 **/.venv/
+**/.pytest_cache/
+**/.ruff_cache/
 backend/voices/*.onnx
 backend/voices/*.onnx.json
 .claude/
@@ -14,3 +16,6 @@ frontend/design/
 **/faiss_vector_store/
 **/uploaded_documents/
 **/chrome_profiles/
+
+# promo video build output (frames, footage, demo token)
+promo/out/

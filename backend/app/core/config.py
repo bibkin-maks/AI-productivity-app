@@ -1,7 +1,8 @@
 import os
 import urllib.parse
-from dotenv import load_dotenv
 from typing import List
+
+from dotenv import load_dotenv
 
 load_dotenv()
 

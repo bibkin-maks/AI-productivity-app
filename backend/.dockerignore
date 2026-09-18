@@ -11,6 +11,14 @@
 
 images
 
+# dev-only: tests and tooling
+tests
+pytest.ini
+ruff.toml
+requirements-dev.txt
+.pytest_cache
+.ruff_cache
+
 # voice models are downloaded in the image build
 voices/*.onnx
 voices/*.onnx.json

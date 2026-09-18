@@ -1,7 +1,8 @@
 import io
-from pypdf import PdfReader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from typing import List
+
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from pypdf import PdfReader
 
 MAX_PDF_PAGES = 100  # Reasonable limit; larger docs risk token budget exhaustion
 

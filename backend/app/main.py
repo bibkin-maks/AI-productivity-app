@@ -1,14 +1,15 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
-from app.db.client import db
-from app.routers import auth, docs, notebooks, events, speech
 from app.core.config import settings
 from app.core.limiter import limiter
+from app.db.client import db
+from app.routers import auth, docs, events, notebooks, speech
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
