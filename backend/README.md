@@ -47,10 +47,22 @@ Everything except `/userauth/` and `/health` needs `Authorization: Bearer <token
 - **Sign-in** — the frontend sends Google's ID token; the backend verifies it, finds or creates the
   user, and returns a JWT signed with `SECRET_KEY` plus a per-user secret, so signing out
   invalidates every token for that user.
-- **Documents** — PDFs are parsed in memory with `pypdf` and split into overlapping chunks; only
-  the chunks are stored. On each question a FAISS index is built from them in memory, the top 3
-  matches go into the prompt, and `gpt-4o-mini` answers with the last few chat turns as context.
+- **Documents** — PDFs are parsed in memory with `pypdf` and split into overlapping chunks, which are
+  embedded once (`text-embedding-3-small`) and stored in the `chunks` collection. A question is embedded,
+  ranked against the stored vectors (cosine similarity in numpy), and the top 3 passages go into the
+  prompt for `gpt-4o-mini`, together with the last few chat turns.
+- **Data** — `users` holds the profile, signing secret and a capped chat history (last 200 messages);
+  `events`, `notebooks`, `notes` and `chunks` are separate collections keyed by `user_id`. Users on the
+  old embedded layout are migrated on their first request (`app/services/migration.py`).
 - **Voice** — `/speak` uses local [Piper](https://github.com/rhasspy/piper) voices
   (see [voices/README.md](voices/README.md)); `/transcribe` uses OpenAI Whisper, or a local
   `faster-whisper` model when `WHISPER_LOCAL_MODEL` is set.
 - **Rate limits** — uploads 5/min, questions 30/min, speech 60/min, transcription 30/min per client.
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest            # in-memory MongoDB, OpenAI/Google stubbed — never touches real services
+ruff check app tests
+```

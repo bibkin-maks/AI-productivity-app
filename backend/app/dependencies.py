@@ -1,7 +1,10 @@
 from fastapi import Header, HTTPException
-from jose import jwt, JWTError
+from jose import JWTError, jwt
+
 from app.core.config import settings
+from app.services.migration import ensure_migrated
 from app.services.users import get_user_by_id
+
 
 async def get_current_user(authorization: str = Header(None)):
     if not authorization:
@@ -36,4 +39,4 @@ async def get_current_user(authorization: str = Header(None)):
     except JWTError:
         raise HTTPException(401, "Token invalid or expired")
 
-    return user
+    return await ensure_migrated(user)

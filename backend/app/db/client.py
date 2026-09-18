@@ -1,5 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+
 from app.core.config import settings
+
 
 class Database:
     client: AsyncIOMotorClient = None
@@ -11,12 +13,13 @@ class Database:
         print("Connected to MongoDB (Async via Motor)")
 
     async def create_indexes(self):
-        """Create indexes on array ID fields to speed up lookups.
-        Idempotent — safe to call on every startup."""
-        users = self.db["users"]
-        await users.create_index("events.id")
-        await users.create_index("notebooks.id")
-        await users.create_index("notes.id")
+        """Indexes for the per-user collections. Idempotent — safe on every startup."""
+        await self.db["events"].create_index([("user_id", 1), ("start", 1)])
+        await self.db["events"].create_index([("user_id", 1), ("seriesId", 1)])
+        await self.db["notebooks"].create_index([("user_id", 1), ("created_at", 1)])
+        await self.db["notes"].create_index([("user_id", 1), ("notebook_id", 1), ("order", 1)])
+        await self.db["notes"].create_index([("user_id", 1), ("updated_at", -1)])
+        await self.db["chunks"].create_index([("user_id", 1), ("index", 1)])
         print("MongoDB indexes ensured.")
 
     def close(self):

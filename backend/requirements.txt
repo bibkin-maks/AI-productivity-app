@@ -1,6 +1,7 @@
 # Core API
 fastapi
 uvicorn[standard]
+python-multipart
 
 # Environment
 python-dotenv
@@ -8,33 +9,22 @@ python-dotenv
 # Validation
 pydantic
 
-# OpenAI
+# AI: chat completions + embeddings (vectors ranked with numpy)
 openai
+numpy
 
-# LangChain ecosystem
-langchain-community
-langchain-openai
+# PDF loading and chunking
+pypdf
 langchain-text-splitters
 
-# Vector store
-faiss-cpu
-
-# PDF loading
-pypdf
+# Database
 motor
-
+pymongo
 
 # Auth & security
 python-jose[cryptography]
 google-auth
-
-# Database
-pymongo
-
-# HTTP
 requests
-
-python-multipart
 
 # Rate limiting
 slowapi
