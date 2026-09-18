@@ -1,0 +1,45 @@
+# Core API
+fastapi
+uvicorn[standard]
+
+# Environment
+python-dotenv
+
+# Validation
+pydantic
+
+# OpenAI
+openai
+
+# LangChain ecosystem
+langchain-community
+langchain-openai
+langchain-text-splitters
+
+# Vector store
+faiss-cpu
+
+# PDF loading
+pypdf
+motor
+
+
+# Auth & security
+python-jose[cryptography]
+google-auth
+
+# Database
+pymongo
+
+# HTTP
+requests
+
+python-multipart
+
+# Rate limiting
+slowapi
+
+# Optional: local neural voice for Purr Assist (github.com/rhasspy/piper).
+# Install it and download a voice model (see backend/voices/README.md) to use it;
+# without it /speak returns 503 and the app falls back to the browser's voice.
+# piper-tts
